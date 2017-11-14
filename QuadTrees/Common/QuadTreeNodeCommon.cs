@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using QuadTrees.Helper;
 
@@ -543,25 +544,22 @@ namespace QuadTrees.Common
                     Debug.Assert(objects == null || _objectCount == 0);
                     if (--threadLevel == 0)
                     {
+                        var tlTask = new Task(() => ChildTl.InsertStore(tl, middlePoint, range, start, quater1, createObject, 0));
+                        var trTask = new Task(() => ChildTr.InsertStore(new Point(middlePoint.X, tl.Y),
+                                new Point(br.X, middlePoint.Y), range, quater1, quater2, createObject, 0));
+                        var blTask = new Task(() => ChildBl.InsertStore(new Point(tl.X, middlePoint.Y),
+                                new Point(middlePoint.X, br.Y), range, quater2, quater3, createObject, 0));
+                        var brTask = new Task(() => ChildBr.InsertStore(middlePoint, br, range, quater3, end, createObject, 0));
 
-                        tasks.Add(
-                            Task.Run(
-                                () => ChildTl.InsertStore(tl, middlePoint, range, start, quater1, createObject, 0)));
-                        tasks.Add(
-                            Task.Run(
-                                () =>
-                                    ChildTr.InsertStore(new Point(middlePoint.X, tl.Y),
-                                        new Point(br.X, middlePoint.Y), range, quater1,
-                                        quater2, createObject, 0)));
-                        tasks.Add(
-                            Task.Run(
-                                () =>
-                                    ChildBl.InsertStore(new Point(tl.X, middlePoint.Y),
-                                        new Point(middlePoint.X, br.Y), range, quater2,
-                                        quater3, createObject, 0)));
-                        tasks.Add(
-                            Task.Run(
-                                () => ChildBr.InsertStore(middlePoint, br, range, quater3, end, createObject, 0)));
+                        tlTask.Start(TaskScheduler.Current);
+                        trTask.Start(TaskScheduler.Current);
+                        blTask.Start(TaskScheduler.Current);
+                        brTask.Start(TaskScheduler.Current);
+
+                        tasks.Add(tlTask);
+                        tasks.Add(trTask);
+                        tasks.Add(blTask);
+                        tasks.Add(brTask);
 
                         if (objects != null)
                         {
@@ -636,15 +634,14 @@ namespace QuadTrees.Common
                 threads = (int)Math.Pow(threadLevel, 4); //, (int)Math.Ceiling(((int)points.Length) / threads)
                 if (points.Length > 0)
                 {
-                    Parallel.ForEach(Partitioner.Create(0, points.Length), (a) =>
+                    Parallel.ForEach(Partitioner.Create(points), (a) =>
                     {
                         int localMinX = int.MaxValue,
                             localMaxX = int.MinValue,
                             localMinY = int.MaxValue,
                             localMaxY = int.MinValue;
-                        for (int i = a.Item1; i < a.Item2; i++)
-                        {
-                            var point = GetMortonPoint(points[i]);
+
+                            var point = GetMortonPoint(a);
                             if (point.X > localMaxX)
                             {
                                 localMaxX = point.X;
@@ -661,7 +658,6 @@ namespace QuadTrees.Common
                             {
                                 localMinY = point.Y;
                             }
-                        }
 
                         lock (lockObj)
                         {

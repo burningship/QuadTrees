@@ -291,7 +291,8 @@ namespace QuadTrees.Common
                 }
             };
             var bgTaskCancel = new CancellationTokenSource();
-            var bgTask = Task.Run(dictRemovalProc, bgTaskCancel.Token);
+            var bgTask = new Task(dictRemovalProc, bgTaskCancel.Token);
+            bgTask.Start(TaskScheduler.Current);
             
             //Process
             foreach (var s in set)
@@ -328,7 +329,7 @@ namespace QuadTrees.Common
             var bgTaskStatus = bgTask.Status;
             if (bgTaskStatus == TaskStatus.Running)
             {
-                bgTask.Wait();
+                bgTask.Wait(bgTaskCancel.Token);
             }
             else if(bgTaskStatus != TaskStatus.RanToCompletion)
             {
