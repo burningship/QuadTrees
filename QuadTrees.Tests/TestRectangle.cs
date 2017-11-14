@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using QuadTrees.QTreeRectF;
+using QuadTrees.QTreeRect;
+using UnityEngine;
+using Random = System.Random;
 
 namespace QuadTrees.Tests
 {
     [TestFixture]
     public class TestRectangle
     {
-        class QTreeObject: IRectFQuadStorable
+        class QTreeObject : IRectQuadStorable
         {
-            private RectangleF _rect;
+            private Rect _rect;
 
-            public RectangleF Rect
+            public Rect Rect
             {
                 get { return _rect; }
             }
 
-            public QTreeObject(RectangleF rect)
+            public QTreeObject(Rect rect)
             {
                 _rect = rect;
             }
@@ -29,51 +27,51 @@ namespace QuadTrees.Tests
         [TestCase]
         public void TestListQuery()
         {
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
-            var list = qtree.GetObjects(new RectangleF(9, 9, 20, 20));
+            var list = qtree.GetObjects(new Rect(9, 9, 20, 20));
             Assert.AreEqual(1, list.Count);
         }
         [TestCase]
         public void TestListQueryOutput()
         {
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
             var list = new List<QTreeObject>();
-            qtree.GetObjects(new RectangleF(9, 9, 20, 20), list);
+            qtree.GetObjects(new Rect(9, 9, 20, 20), list);
             Assert.AreEqual(1, list.Count);
         }
         [TestCase]
         public void TestListQueryEnum()
         {
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
-            var list = qtree.EnumObjects(new RectangleF(9, 9, 20, 20));
+            var list = qtree.EnumObjects(new Rect(9, 9, 20, 20));
             Assert.AreEqual(1, list.Count());
         }
         [TestCase]
         public void TestListGetAll()
         {
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
             var list = qtree.GetAllObjects();
@@ -83,16 +81,16 @@ namespace QuadTrees.Tests
         public void TestAddMany()
         {
             Random r = new Random(1000);
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             for (int i = 0; i < 10000; i++)
             {
-                qtree.Add(new QTreeObject(new RectangleF(r.Next(0, 1000) / 1000f, r.Next(0, 1000) / 1000f, r.Next(1000, 20000) / 1000f, r.Next(1000, 20000) / 1000f)));
+                qtree.Add(new QTreeObject(new Rect(r.Next(0, 1000) / 1000f, r.Next(0, 1000) / 1000f, r.Next(1000, 20000) / 1000f, r.Next(1000, 20000) / 1000f)));
             }
 
-            var result = qtree.GetObjects(new RectangleF(-100, -100, 200, 200));
+            var result = qtree.GetObjects(new Rect(-100, -100, 200, 200));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
 
-            result = qtree.GetObjects(new RectangleF(-.100f, -.100f, .200f, .200f));
+            result = qtree.GetObjects(new Rect(-.100f, -.100f, .200f, .200f));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
         }
 
@@ -100,18 +98,18 @@ namespace QuadTrees.Tests
         public void TestBulkAddManyThreaded()
         {
             Random r = new Random(1000);
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             List<QTreeObject> list = new List<QTreeObject>();
             for (int i = 0; i < 10000; i++)
             {
-                list.Add(new QTreeObject(new RectangleF(r.Next(0, 1000) / 1000f, r.Next(0, 1000) / 1000f, r.Next(1000, 20000) / 1000f, r.Next(1000, 20000) / 1000f)));
+                list.Add(new QTreeObject(new Rect(r.Next(0, 1000) / 1000f, r.Next(0, 1000) / 1000f, r.Next(1000, 20000) / 1000f, r.Next(1000, 20000) / 1000f)));
             }
             qtree.AddBulk(list, 1);
 
-            var result = qtree.GetObjects(new RectangleF(-100, -100, 200, 200));
+            var result = qtree.GetObjects(new Rect(-100, -100, 200, 200));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
 
-            result = qtree.GetObjects(new RectangleF(-.100f, -.100f, .200f, .200f));
+            result = qtree.GetObjects(new Rect(-.100f, -.100f, .200f, .200f));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
         }
 
@@ -119,33 +117,33 @@ namespace QuadTrees.Tests
         public void TestBulkAddMany()
         {
             Random r = new Random(1000);
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
-            List<QTreeObject> list= new List<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
+            List<QTreeObject> list = new List<QTreeObject>();
             for (int i = 0; i < 10000; i++)
             {
-                list.Add(new QTreeObject(new RectangleF(r.Next(0, 1000) / 1000f, r.Next(0, 1000) / 1000f, r.Next(1000, 20000) / 1000f, r.Next(1000, 20000) / 1000f)));
+                list.Add(new QTreeObject(new Rect(r.Next(0, 1000) / 1000f, r.Next(0, 1000) / 1000f, r.Next(1000, 20000) / 1000f, r.Next(1000, 20000) / 1000f)));
             }
             qtree.AddBulk(list);
 
-            var result = qtree.GetObjects(new RectangleF(-100, -100, 200, 200));
+            var result = qtree.GetObjects(new Rect(-100, -100, 200, 200));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
 
-            result = qtree.GetObjects(new RectangleF(-.100f, -.100f, .200f, .200f));
+            result = qtree.GetObjects(new Rect(-.100f, -.100f, .200f, .200f));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
         }
 
         [TestCase]
         public void TestAddManySame()
         {
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             List<QTreeObject> list = new List<QTreeObject>();
             for (int i = 0; i < 10000; i++)
             {
-                list.Add(new QTreeObject(new RectangleF(1, 1, 1, 1)));
+                list.Add(new QTreeObject(new Rect(1, 1, 1, 1)));
             }
             qtree.AddRange(list);
 
-            var result = qtree.GetObjects(new RectangleF(-100, -100, 200, 200));
+            var result = qtree.GetObjects(new Rect(-100, -100, 200, 200));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
             Assert.AreEqual(10000, result.Count);
         }
@@ -153,15 +151,15 @@ namespace QuadTrees.Tests
         [TestCase]
         public void TestBulkAddManySame()
         {
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             List<QTreeObject> list = new List<QTreeObject>();
             for (int i = 0; i < 10000; i++)
             {
-                list.Add(new QTreeObject(new RectangleF(1,1,1,1)));
+                list.Add(new QTreeObject(new Rect(1, 1, 1, 1)));
             }
             qtree.AddBulk(list);
 
-            var result = qtree.GetObjects(new RectangleF(-100, -100, 200, 200));
+            var result = qtree.GetObjects(new Rect(-100, -100, 200, 200));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
             Assert.AreEqual(10000, result.Count);
         }
@@ -169,14 +167,14 @@ namespace QuadTrees.Tests
         [TestCase]
         public void TestAddSameIndividual()
         {
-            QuadTreeRectF<QTreeObject> qtree = new QuadTreeRectF<QTreeObject>();
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
             List<QTreeObject> list = new List<QTreeObject>();
             for (int i = 0; i < 10000; i++)
             {
-                qtree.Add(new QTreeObject(new RectangleF(1, 1, 1, 1)));
+                qtree.Add(new QTreeObject(new Rect(1, 1, 1, 1)));
             }
 
-            var result = qtree.GetObjects(new RectangleF(-100, -100, 200, 200));
+            var result = qtree.GetObjects(new Rect(-100, -100, 200, 200));
             Assert.AreEqual(result.Distinct().Count(), result.Count);
             Assert.AreEqual(10000, result.Count);
         }

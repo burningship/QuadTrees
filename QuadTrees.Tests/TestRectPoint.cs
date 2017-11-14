@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using QuadTrees.QTreeRectF;
+using QuadTrees.QTreeRect;
+using UnityEngine;
 
 namespace QuadTrees.Tests
 {
     [TestFixture]
     public class TestRectPoint
     {
-        class QTreeObject : IRectFQuadStorable
+        class QTreeObject : IRectQuadStorable
         {
-            private RectangleF _rect;
+            private Rect _rect;
 
-            public RectangleF Rect
+            public Rect Rect
             {
                 get { return _rect; }
             }
 
-            public QTreeObject(RectangleF rect)
+            public QTreeObject(Rect rect)
             {
                 _rect = rect;
             }
@@ -32,11 +29,11 @@ namespace QuadTrees.Tests
             QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
-            var list = qtree.GetObjects(new PointF(11,11));
+            var list = qtree.GetObjects(new Vector2(11,11));
             Assert.AreEqual(1, list.Count);
         }
         [TestCase]
@@ -46,11 +43,11 @@ namespace QuadTrees.Tests
             QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
-            qtree.GetObjects(new PointF(11, 11), list);
+            qtree.GetObjects(new Vector2(11, 11), list);
             Assert.AreEqual(1, list.Count);
         }
         [TestCase]
@@ -59,11 +56,11 @@ namespace QuadTrees.Tests
             QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
-            var list = qtree.EnumObjects(new PointF(11, 11));
+            var list = qtree.EnumObjects(new Vector2(11, 11));
             Assert.AreEqual(1, list.Count());
         }
         [TestCase]
@@ -72,8 +69,8 @@ namespace QuadTrees.Tests
             QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new RectangleF(10,10,10,10)),
-                new QTreeObject(new RectangleF(-1000,1000,10,10))
+                new QTreeObject(new Rect(10,10,10,10)),
+                new QTreeObject(new Rect(-1000,1000,10,10))
             });
 
             var list = qtree.GetAllObjects();

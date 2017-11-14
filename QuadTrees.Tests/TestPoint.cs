@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using QuadTrees.QTreePointF;
-using QuadTrees.QTreeRectF;
+using QuadTrees.QTreeVector2;
+using UnityEngine;
 
 namespace QuadTrees.Tests
 {
     [TestFixture]
     public class TestPoint
     {
-        class QTreeObject: IPointFQuadStorable
+        class QTreeObject: IVector2QuadStorable
         {
-            private PointF _rect;
+            private Vector2 _rect;
 
-            public PointF Point
+            public Vector2 Point
             {
                 get { return _rect; }
             }
 
-            public QTreeObject(PointF rect)
+            public QTreeObject(Vector2 rect)
             {
                 _rect = rect;
             }
@@ -30,51 +26,51 @@ namespace QuadTrees.Tests
         [TestCase]
         public void TestListQuery()
         {
-            QuadTreePointF<QTreeObject> qtree = new QuadTreePointF<QTreeObject>();
+            QuadTreeVector2<QTreeObject> qtree = new QuadTreeVector2<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new PointF(10,10)),
-                new QTreeObject(new PointF(-1000,1000))
+                new QTreeObject(new Vector2(10,10)),
+                new QTreeObject(new Vector2(-1000,1000))
             });
 
-            var list = qtree.GetObjects(new RectangleF(9, 9, 20, 20));
+            var list = qtree.GetObjects(new Rect(9, 9, 20, 20));
             Assert.AreEqual(1, list.Count);
         }
         [TestCase]
         public void TestListQueryOutput()
         {
-            QuadTreePointF<QTreeObject> qtree = new QuadTreePointF<QTreeObject>();
+            QuadTreeVector2<QTreeObject> qtree = new QuadTreeVector2<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new PointF(10,10)),
-                new QTreeObject(new PointF(-1000,1000))
+                new QTreeObject(new Vector2(10,10)),
+                new QTreeObject(new Vector2(-1000,1000))
             }); ;
 
             var list = new List<QTreeObject>();
-            qtree.GetObjects(new RectangleF(9, 9, 20, 20), list);
+            qtree.GetObjects(new Rect(9, 9, 20, 20), list);
             Assert.AreEqual(1, list.Count);
         }
         [TestCase]
         public void TestListQueryEnum()
         {
-            QuadTreePointF<QTreeObject> qtree = new QuadTreePointF<QTreeObject>();
+            QuadTreeVector2<QTreeObject> qtree = new QuadTreeVector2<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new PointF(10,10)),
-                new QTreeObject(new PointF(-1000,1000))
+                new QTreeObject(new Vector2(10,10)),
+                new QTreeObject(new Vector2(-1000,1000))
             });
 
-            var list = qtree.EnumObjects(new RectangleF(9, 9, 20, 20));
+            var list = qtree.EnumObjects(new Rect(9, 9, 20, 20));
             Assert.AreEqual(1, list.Count());
         }
         [TestCase]
         public void TestListGetAll()
         {
-            QuadTreePointF<QTreeObject> qtree = new QuadTreePointF<QTreeObject>();
+            QuadTreeVector2<QTreeObject> qtree = new QuadTreeVector2<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
-                new QTreeObject(new PointF(10,10)),
-                new QTreeObject(new PointF(-1000,1000))
+                new QTreeObject(new Vector2(10,10)),
+                new QTreeObject(new Vector2(-1000,1000))
             });
 
             var list = qtree.GetAllObjects();

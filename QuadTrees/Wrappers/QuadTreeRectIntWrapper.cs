@@ -1,4 +1,4 @@
-﻿using QuadTrees.QTreeRect;
+﻿using QuadTrees.QTreeRectInt;
 using UnityEngine;
 
 namespace QuadTrees.Wrappers
@@ -6,16 +6,16 @@ namespace QuadTrees.Wrappers
     /// <summary>
     /// A simple container for a rectangle in a QuadTree
     /// </summary>
-    public struct QuadTreeRectWrapper : IRectQuadStorable
+    public struct QuadTreeRectIntWrapper : IRectIntQuadStorable
     {
-        private Rect _rect;
+        private RectInt _rect;
 
-        public Rect Rect
+        public RectInt Rect
         {
             get { return _rect; }
         }
 
-        public QuadTreeRectWrapper(Rect rect)
+        public QuadTreeRectIntWrapper(RectInt rect)
         {
             _rect = rect;
         }

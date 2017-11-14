@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace QuadTrees.Common
 {
-    public abstract class QuadTreeFCommon<TObject, TNode, TQuery> : ICollection<TObject> where TNode : QuadTreeFNodeCommon<TObject, TNode, TQuery>
+    public abstract class QuadTreeIntCommon<TObject, TNode, TQuery> : ICollection<TObject> where TNode : QuadTreeIntNodeCommon<TObject, TNode, TQuery>
     {
         #region Private Members
 
@@ -22,24 +22,24 @@ namespace QuadTrees.Common
 
         #endregion
 
-        protected abstract TNode CreateNode(RectangleF rect);
+        protected abstract TNode CreateNode(RectInt rect);
 
         #region Constructor
 
         /// <summary>
         /// Initialize a QuadTree covering the full range of values possible
         /// </summary>
-        protected QuadTreeFCommon()
+        protected QuadTreeIntCommon()
         {
             QuadTreePointRoot =
-                CreateNode(new RectangleF(float.MinValue/2, float.MinValue/2, float.MaxValue, float.MaxValue));
-        } 
+                CreateNode(new RectInt(int.MinValue / 2, int.MinValue / 2, int.MaxValue, int.MaxValue));
+        }
 
         /// <summary>
         /// Creates a QuadTree for the specified area.
         /// </summary>
         /// <param name="rect">The area this QuadTree object will encompass.</param>
-        protected QuadTreeFCommon(RectangleF rect)
+        protected QuadTreeIntCommon(RectInt rect)
         {
             QuadTreePointRoot = CreateNode(rect);
         }
@@ -52,9 +52,9 @@ namespace QuadTrees.Common
         /// <param name="y">The top-right position of the area rectangle.</param>
         /// <param name="width">The width of the area rectangle.</param>
         /// <param name="height">The height of the area rectangle.</param>
-        protected QuadTreeFCommon(float x, float y, float width, float height)
+        protected QuadTreeIntCommon(int x, int y, int width, int height)
         {
-            QuadTreePointRoot = CreateNode(new RectangleF(x, y, width, height));
+            QuadTreePointRoot = CreateNode(new RectInt(x, y, width, height));
         }
 
         #endregion
@@ -62,9 +62,9 @@ namespace QuadTrees.Common
         #region Public Methods
 
         /// <summary>
-        /// Gets the RectangleF that bounds this QuadTree
+        /// Gets the Rectangle that bounds this QuadTree
         /// </summary>
-        public RectangleF QuadRect
+        public RectInt QuadRect
         {
             get { return QuadTreePointRoot.QuadRect; }
         }
@@ -72,7 +72,7 @@ namespace QuadTrees.Common
         /// <summary>
         /// Get the objects in this tree that intersect with the specified rectangle.
         /// </summary>
-        /// <param name="rect">The RectangleF to find objects in.</param>
+        /// <param name="rect">The Rectangle to find objects in.</param>
         public List<TObject> GetObjects(TQuery rect)
         {
             return QuadTreePointRoot.GetObjects(rect);
@@ -86,23 +86,23 @@ namespace QuadTrees.Common
         public IEnumerable<TObject> EnumObjects(TQuery rect)
         {
             return QuadTreePointRoot.EnumObjects(rect);
-        } 
+        }
 
 
         /// <summary>
         /// Get the objects in this tree that intersect with the specified rectangle.
         /// </summary>
-        /// <param name="rect">The RectangleF to find objects in.</param>
+        /// <param name="rect">The Rectangle to find objects in.</param>
         /// <param name="results">A reference to a list that will be populated with the results.</param>
         public void GetObjects(TQuery rect, List<TObject> results)
         {
             Action<TObject> cb = results.Add;
 #if DEBUG
-            cb = (a) =>
-            {
-                Debug.Assert(!results.Contains(a));
-                results.Add(a);
-            };
+        cb = (a) =>
+        {
+            Debug.Assert(!results.Contains(a));
+            results.Add(a);
+        };
 #endif
             QuadTreePointRoot.GetObjects(rect, cb);
         }
@@ -271,15 +271,16 @@ namespace QuadTrees.Common
         /// </summary>
         /// <param name="whereExpr"></param>
         /// <returns></returns>
-        public bool RemoveAll(Func<TObject,bool> whereExpr)
+        public bool RemoveAll(Func<TObject, bool> whereExpr)
         {
             Debug.Assert(WrappedDictionary.Count == QuadTreePointRoot.Count);
             var owners = new HashSet<TNode>();
-            var set = new List<QuadTreeObject<TObject,TNode>>();
-            foreach(var kv in WrappedDictionary){
+            var set = new List<QuadTreeObject<TObject, TNode>>();
+            foreach (var kv in WrappedDictionary)
+            {
                 if (!whereExpr(kv.Key)) continue;
                 set.Add(kv.Value);
-            } 
+            }
 
             //Dictionary removals can happen in the background
             Action dictRemovalProc = () =>
@@ -293,7 +294,7 @@ namespace QuadTrees.Common
             var bgTaskCancel = new CancellationTokenSource();
             var bgTask = new Task(dictRemovalProc, bgTaskCancel.Token);
             bgTask.Start(TaskScheduler.Current);
-            
+
             //Process
             foreach (var s in set)
             {
@@ -331,7 +332,7 @@ namespace QuadTrees.Common
             {
                 bgTask.Wait(bgTaskCancel.Token);
             }
-            else if(bgTaskStatus != TaskStatus.RanToCompletion)
+            else if (bgTaskStatus != TaskStatus.RanToCompletion)
             {
                 bgTaskCancel.Cancel();
                 dictRemovalProc();

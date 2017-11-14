@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuadTrees.QTreePointF;
+﻿using QuadTrees.QTreeVector2;
+using UnityEngine;
 
 namespace QuadTrees.Wrappers
 {
     /// <summary>
     /// A simple container for a point in a QuadTree
     /// </summary>
-    public struct QuadTreePointFWrapper: IPointFQuadStorable
+    public struct QuadTreeVector2Wrapper: IVector2QuadStorable
     {
-        private PointF _point;
+        private Vector2 _point;
 
-        public PointF Point
+        public Vector2 Point
         {
             get { return _point; }
         }
 
-        public QuadTreePointFWrapper(PointF point)
+        public QuadTreeVector2Wrapper(Vector2 point)
         {
             _point = point;
         }

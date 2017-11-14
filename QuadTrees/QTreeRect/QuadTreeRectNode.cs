@@ -1,6 +1,6 @@
-using System.Drawing;
 using QuadTrees.Common;
 using QuadTrees.Helper;
+using UnityEngine;
 
 namespace QuadTrees.QTreeRect
 {
@@ -8,9 +8,9 @@ namespace QuadTrees.QTreeRect
     /// A QuadTree Object that provides fast and efficient storage of objects in a world space.
     /// </summary>
     /// <typeparam name="T">Any object implementing IQuadStorable.</typeparam>
-    public abstract class QuadTreeRectNode<T, TQuery> : QuadTreeNodeCommon<T, QuadTreeRectNode<T, TQuery>, TQuery> where T : IRectQuadStorable
+    public abstract class QuadTreeRectNode<T, TQuery> : QuadTreeFloatNodeCommon<T, QuadTreeRectNode<T, TQuery>, TQuery> where T : IRectQuadStorable
     {
-        public QuadTreeRectNode(Rectangle rect) : base(rect)
+        public QuadTreeRectNode(Rect rect) : base(rect)
         {
         }
 
@@ -18,19 +18,19 @@ namespace QuadTrees.QTreeRect
         {
         }
 
-        internal QuadTreeRectNode(QuadTreeRectNode<T, TQuery> parent, Rectangle rect) : base(parent, rect)
+        internal QuadTreeRectNode(QuadTreeRectNode<T, TQuery> parent, Rect rect) : base(parent, rect)
         {
         }
 
-        protected override bool CheckContains(Rectangle rectangle, T data)
+        protected override bool CheckContains(Rect rectangleF, T data)
         {
-            return rectangle.Contains(data.Rect);
+            return rectangleF.Contains(data.Rect);
         }
     }
 
-    public class QuadTreeRectNode<T> : QuadTreeRectNode<T, Rectangle> where T : IRectQuadStorable
+    public class QuadTreeRectNode<T> : QuadTreeRectNode<T, Rect> where T : IRectQuadStorable
     {
-        public QuadTreeRectNode(Rectangle rect) : base(rect)
+        public QuadTreeRectNode(Rect rect) : base(rect)
         {
         }
 
@@ -38,37 +38,37 @@ namespace QuadTrees.QTreeRect
         {
         }
 
-        internal QuadTreeRectNode(QuadTreeRectNode<T> parent, Rectangle rect) : base(parent, rect)
+        internal QuadTreeRectNode(QuadTreeRectNode<T> parent, Rect rect) : base(parent, rect)
         {
         }
-        protected override QuadTreeRectNode<T, Rectangle> CreateNode(Rectangle Rectangle)
+        protected override QuadTreeRectNode<T, Rect> CreateNode(Rect rectangleF)
         {
-            VerifyNodeAssertions(Rectangle);
-            return new QuadTreeRectNode<T>(this, Rectangle);
-        }
-
-        protected override bool CheckIntersects(Rectangle searchRect, T data)
-        {
-            return searchRect.IntersectsWith(data.Rect);
+            VerifyNodeAssertions(rectangleF);
+            return new QuadTreeRectNode<T>(this, rectangleF);
         }
 
-        public override bool ContainsObject(QuadTreeObject<T, QuadTreeRectNode<T, Rectangle>> qto)
+        protected override bool CheckIntersects(Rect searchRect, T data)
+        {
+            return searchRect.Intersects(data.Rect);
+        }
+
+        public override bool ContainsObject(QuadTreeObject<T, QuadTreeRectNode<T, Rect>> qto)
         {
             return CheckContains(QuadRect, qto.Data);
         }
 
-        protected override bool QueryContains(Rectangle search, Rectangle rect)
+        protected override bool QueryContains(Rect search, Rect rect)
         {
             return search.Contains(rect);
         }
 
-        protected override bool QueryIntersects(Rectangle search, Rectangle rect)
+        protected override bool QueryIntersects(Rect search, Rect rect)
         {
-            return search.IntersectsWith(rect);
+            return search.Intersects(rect);
         }
-        protected override Point GetMortonPoint(T p)
+        protected override Vector2 GetMortonPoint(T p)
         {
-            return p.Rect.Location;//todo: center?
+            return p.Rect.position;//todo: center?
         }
     }
 }

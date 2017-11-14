@@ -1,4 +1,4 @@
-using System.Drawing;
+using UnityEngine;
 
 namespace QuadTrees.QTreeRect
 {
@@ -8,8 +8,8 @@ namespace QuadTrees.QTreeRect
     public interface IRectQuadStorable
     {
         /// <summary>
-        /// The RectangleF that defines the object's boundaries.
+        /// The Rect that defines the object's boundaries.
         /// </summary>
-        Rectangle Rect { get; }
+        Rect Rect { get; }
     }
 }
