@@ -26,7 +26,7 @@ namespace QuadTrees.Tests
         [TestCase]
         public void TestListQuery()
         {
-            QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
+            QuadTreeRectVector2Inverse<QTreeObject> qtree = new QuadTreeRectVector2Inverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
                 new QTreeObject(new Rect(10,10,10,10)),
@@ -40,7 +40,7 @@ namespace QuadTrees.Tests
         public void TestListQueryOutput()
         {
             var list = new List<QTreeObject>();
-            QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
+            QuadTreeRectVector2Inverse<QTreeObject> qtree = new QuadTreeRectVector2Inverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
                 new QTreeObject(new Rect(10,10,10,10)),
@@ -53,7 +53,7 @@ namespace QuadTrees.Tests
         [TestCase]
         public void TestListQueryEnum()
         {
-            QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
+            QuadTreeRectVector2Inverse<QTreeObject> qtree = new QuadTreeRectVector2Inverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
                 new QTreeObject(new Rect(10,10,10,10)),
@@ -66,7 +66,7 @@ namespace QuadTrees.Tests
         [TestCase]
         public void TestListGetAll()
         {
-            QuadTreeRectPointFInverse<QTreeObject> qtree = new QuadTreeRectPointFInverse<QTreeObject>();
+            QuadTreeRectVector2Inverse<QTreeObject> qtree = new QuadTreeRectVector2Inverse<QTreeObject>();
             qtree.AddRange(new List<QTreeObject>
             {
                 new QTreeObject(new Rect(10,10,10,10)),
