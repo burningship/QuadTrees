@@ -1,7 +1,5 @@
 # QuadTrees
 
-[![Build Status](https://travis-ci.org/burningship/QuadTrees.png?branch=master)](https://travis-ci.org/burningship/QuadTrees)
-
 High Performance Quad Tree Implementations for Unity3D C# (Vector2, Vector2Int, Rect & RectInt)
 
 ## Example
