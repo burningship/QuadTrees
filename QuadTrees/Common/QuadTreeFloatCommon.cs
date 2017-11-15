@@ -112,7 +112,7 @@ namespace QuadTrees.Common
         {
             QuadTreePointRoot.GetObjects(rect, add);
         }
-
+        
         /// <summary>
         /// Get all objects in this Quad, and it's children.
         /// </summary>
@@ -121,6 +121,42 @@ namespace QuadTrees.Common
             return WrappedDictionary.Keys;
         }
 
+        /// <summary>
+        /// Get the objects in this tree that intersect with, or are placed at the specified point.
+        /// </summary>
+        /// <param name="point">The position to find objects in.</param>
+        /// <param name="results">A reference to a list that will be populated with the results.</param>
+        public void GetObjectsAt(Vector2 point, List<TObject> results)
+        {
+            Action<TObject> cb = results.Add;
+#if DEBUG
+            cb = (a) =>
+            {
+                Debug.Assert(!results.Contains(a));
+                results.Add(a);
+            };
+#endif
+            QuadTreePointRoot.GetObjectsAt(point, cb);
+        }
+
+        public void GetObjectsAt(Vector2 point, Action<TObject> add)
+        {
+            QuadTreePointRoot.GetObjectsAt(point, add);
+        }
+
+        public bool TryGetObjectAt(Vector2 point, out TObject result)
+        {
+            bool wasfound = false;
+            TObject localResult = default(TObject);
+            Action<TObject> cb = (o) =>
+            {
+                localResult = o;
+                wasfound = true;
+            };
+            QuadTreePointRoot.GetObjectsAt(point, cb, true);
+            result = localResult;
+            return wasfound;
+        }
 
         /// <summary>
         /// Moves the object in the tree

@@ -70,5 +70,10 @@ namespace QuadTrees.QTreeRect
         {
             return p.Rect.position;//todo: center?
         }
+
+        protected override bool IsDataIntersectingPoint(T data, Vector2 point)
+        {
+            return data.Rect.Contains(point);
+        }
     }
 }

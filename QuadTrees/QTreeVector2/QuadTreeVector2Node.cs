@@ -45,9 +45,15 @@ namespace QuadTrees.QTreeVector2
             return CheckContains(searchRect, data);
         }
 
+
         protected override Vector2 GetMortonPoint(T p)
         {
             return p.Point;
+        }
+        protected override bool IsDataIntersectingPoint(T data, Vector2 point)
+        {
+            return data.Point.sqrMagnitude - point.sqrMagnitude < Mathf.Epsilon;
+            //return data.Point.x == point.x && data.Point.y == point.y;
         }
     }
 }

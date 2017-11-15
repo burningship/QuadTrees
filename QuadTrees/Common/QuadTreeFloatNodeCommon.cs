@@ -743,6 +743,8 @@ namespace QuadTrees.Common
         }
 
         public abstract bool ContainsObject(QuadTreeObject<T, TNode> qto);
+        
+        protected abstract bool IsDataIntersectingPoint(T data, Vector2 point);
 
         #region Internal Methods
 
@@ -1022,7 +1024,53 @@ namespace QuadTrees.Common
             }
         }
 
+        /// <summary>
+        /// Get the objects in this tree that intersect with, or are placed at the specified point.
+        /// </summary>
+        /// <param name="point">The position to find objects in.</param>
+        /// <param name="results">A reference to a list that will be populated with the results.</param>
+        /// <param name="shouldStopOnFirst">Optional flag to only check for the first matching point.</param>
+        public void GetObjectsAt(Vector2 point, Action<T> put, bool shouldStopOnFirst = false)
+        {
+            if (ChildTl != null)
+            {
+                if (point.x >= ChildTr.QuadRect.xMin)
+                {
+                    Debug.Assert(ChildTr != this);
+                    Debug.Assert(ChildBr != this);
+                    if (ChildTr.ContainsPoint(point))
+                        ChildTr.GetObjectsAt(point, put);
+                    if (ChildBr.ContainsPoint(point))
+                        ChildBr.GetObjectsAt(point, put);
+                    return;
+                }
+                else
+                {
+                    Debug.Assert(ChildTl != this);
+                    Debug.Assert(ChildBl != this);
+                    if (ChildTl.ContainsPoint(point))
+                        ChildTl.GetObjectsAt(point, put);
+                    if (ChildBl.ContainsPoint(point))
+                        ChildBl.GetObjectsAt(point, put);
+                    return;
+                }
+            }
 
+            if (_objects == null)
+                return;
+
+            for (int i = 0; i < _objectCount; i++)
+            {
+                var data = _objects[i].Data;
+                if (IsDataIntersectingPoint(data, point))
+                {
+                    put(data);
+                    if (shouldStopOnFirst)
+                        return;
+                }
+            }
+        }
+        
         /// <summary>
         /// Get all objects in this Quad, and it's children.
         /// </summary>

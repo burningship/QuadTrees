@@ -178,5 +178,40 @@ namespace QuadTrees.Tests
             Assert.AreEqual(result.Distinct().Count(), result.Count);
             Assert.AreEqual(10000, result.Count);
         }
+
+        [TestCase]
+        public void TestListGetPointsAt()
+        {
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
+            qtree.AddRange(new List<QTreeObject>
+            {
+                new QTreeObject(new Rect(0,0,2,2)),
+                new QTreeObject(new Rect(1,1,1,1))
+            });
+
+            var list = new List<QTreeObject>();
+            qtree.GetObjectsAt(Vector2.one, list);
+
+            Assert.AreEqual(2, list.Count);
+        }
+
+        [TestCase]
+        public void TestListGetPointAt()
+        {
+            QuadTreeRect<QTreeObject> qtree = new QuadTreeRect<QTreeObject>();
+
+            var firstResult = new QTreeObject(new Rect(0, 0, 2, 2));
+
+            qtree.AddRange(new List<QTreeObject>
+            {
+                firstResult,
+                new QTreeObject(new Rect(1,1,1,1))
+            });
+
+            QTreeObject result;
+            qtree.TryGetObjectAt(Vector2.one, out result);
+
+            Assert.AreEqual(result.Rect, firstResult.Rect);
+        }
     }
 }

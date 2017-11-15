@@ -73,7 +73,7 @@
     <Compile Include="QuadTreeRectInt.cs" />
     <Compile Include="QuadTreeRect.cs" />
     <Compile Include="QuadTreeRectVector2IntInverse.cs" />
-    <Compile Include="QuadTreeRectPointFInverse.cs" />
+    <Compile Include="QuadTreeRectVector2Inverse.cs" />
     <Compile Include="Wrappers\QuadTreePointFWrapper.cs" />
     <Compile Include="Wrappers\QuadTreeRectIntWrapper.cs" />
     <Compile Include="Wrappers\QuadTreeRectWrapper.cs" />
