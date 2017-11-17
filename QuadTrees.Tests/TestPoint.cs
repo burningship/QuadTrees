@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Win32.SafeHandles;
 using NUnit.Framework;
 using QuadTrees.QTreeVector2;
 using UnityEngine;
@@ -118,9 +119,32 @@ namespace QuadTrees.Tests
                 new QTreeObject(Vector2.one)
             });
 
-            QTreeObject result;
+            QTreeObject result = null;
             qtree.TryGetObjectAt(Vector2.one, out result);
+            Assert.AreEqual(result.Point, Vector2.one);
+        }
 
+        [TestCase]
+        public void TestListGetPointNotAt()
+        {
+            QuadTreeVector2<QTreeObject> qtree = new QuadTreeVector2<QTreeObject>();
+
+            QTreeObject result = null;
+            qtree.TryGetObjectAt(Vector2.zero, out result);
+            Assert.IsNull(result);
+
+            qtree.Add(new QTreeObject(Vector2.zero));
+            qtree.TryGetObjectAt(Vector2.zero, out result);
+            Assert.NotNull(result);
+            Assert.AreEqual(result.Point, Vector2.zero);
+
+            result = null;
+            qtree.TryGetObjectAt(Vector2.one, out result);
+            Assert.IsNull(result);
+
+            qtree.Add(new QTreeObject(Vector2.one));
+            qtree.TryGetObjectAt(Vector2.one, out result);
+            Assert.NotNull(result);
             Assert.AreEqual(result.Point, Vector2.one);
         }
     }
