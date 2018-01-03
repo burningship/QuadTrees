@@ -50,10 +50,10 @@ namespace QuadTrees.QTreeVector2
         {
             return p.Point;
         }
+
         protected override bool IsDataIntersectingPoint(T data, Vector2 point)
         {
-            return Vector2.SqrMagnitude(data.Point - point) < Mathf.Epsilon;
-            //return data.Point.x == point.x && data.Point.y == point.y;
+            return Vector2.SqrMagnitude(data.Point - point) < 9.99999944E-11f;
         }
     }
 }
